@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from config import CORS_ORIGINS
 from database import Base, engine
 
-# Импортируем все модели, чтобы Base о них узнал перед созданием таблиц
 import user.model
 import store.model
 import category.model
@@ -23,7 +23,6 @@ import notification.model
 import chat.model
 import ai_chat.model
 
-# Импортируем роутеры человеческим способом вверху файла
 from auth.router import router as auth_router
 from user.router import router as user_router
 from store.router import router as store_router
@@ -57,7 +56,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

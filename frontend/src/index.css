@@ -1130,6 +1130,426 @@ textarea {
   to { transform: translateX(320%); }
 }
 
+/* ============================================================
+   POLISH LAYER — глубина, градиенты, свечение и анимации.
+   Дописано поверх базовых стилей; селекторы те же, поэтому
+   правила ниже усиливают внешний вид без изменения разметки.
+   ============================================================ */
+
+:root {
+  --glow-gold: rgba(200, 169, 110, 0.38);
+  --gold-grad: linear-gradient(135deg, #E4CB94 0%, #C8A96E 45%, #A8884E 100%);
+  --ring: rgba(200, 169, 110, 0.28);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 18px 48px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] {
+  --glow-gold: rgba(160, 120, 58, 0.22);
+  --gold-grad: linear-gradient(135deg, #C49A52 0%, #A0783A 50%, #886530 100%);
+  --ring: rgba(160, 120, 58, 0.22);
+  --shadow-soft: 0 4px 20px rgba(20, 20, 20, 0.08);
+  --shadow-lift: 0 18px 44px rgba(20, 20, 20, 0.14);
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmerMove {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes spin360 {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Атмосферный фон с мягкими золотыми бликами --- */
+body {
+  background:
+    radial-gradient(900px 600px at 12% -8%, var(--glow-gold), transparent 60%),
+    radial-gradient(800px 600px at 100% 0%, rgba(200, 169, 110, 0.10), transparent 55%),
+    var(--bg-base);
+  background-attachment: fixed;
+}
+
+/* --- Плавные переходы по умолчанию для интерактива --- */
+a,
+button,
+.nav-item,
+.product-card,
+.store-card,
+.metric-card,
+.surface-card,
+.icon-square,
+.toolbar-button,
+.tab-button,
+.notification-row,
+.chat-summary,
+.mini-product-card {
+  transition:
+    transform 0.35s var(--ease-out),
+    box-shadow 0.35s var(--ease-out),
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.2s ease;
+}
+
+/* --- Появление контента страниц --- */
+.content-shell > * {
+  animation: riseIn 0.5s var(--ease-out) both;
+}
+
+.auth-card {
+  animation: scaleIn 0.45s var(--ease-out) both;
+  box-shadow: var(--shadow-lift);
+}
+
+/* Лёгкий золотой кант сверху карточки логина */
+.auth-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: var(--gold-grad);
+  border-radius: 6px 6px 0 0;
+}
+
+/* --- Сетки: каскадное появление карточек --- */
+.products-grid > *,
+.stores-grid > *,
+.metrics-grid > *,
+.mini-products-row > * {
+  animation: riseIn 0.5s var(--ease-out) both;
+}
+.products-grid > *:nth-child(1),
+.stores-grid > *:nth-child(1),
+.metrics-grid > *:nth-child(1) { animation-delay: 0.04s; }
+.products-grid > *:nth-child(2),
+.stores-grid > *:nth-child(2),
+.metrics-grid > *:nth-child(2) { animation-delay: 0.10s; }
+.products-grid > *:nth-child(3),
+.stores-grid > *:nth-child(3),
+.metrics-grid > *:nth-child(3) { animation-delay: 0.16s; }
+.products-grid > *:nth-child(4),
+.metrics-grid > *:nth-child(4) { animation-delay: 0.22s; }
+.products-grid > *:nth-child(5) { animation-delay: 0.28s; }
+.products-grid > *:nth-child(6) { animation-delay: 0.34s; }
+.products-grid > *:nth-child(n + 7) { animation-delay: 0.40s; }
+
+/* --- Карточки товара/магазина: подъём + золотое свечение --- */
+.product-card,
+.store-card {
+  position: relative;
+  box-shadow: var(--shadow-soft);
+}
+
+.card-link:hover .product-card,
+.product-card:hover,
+.store-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--ring);
+  box-shadow: var(--shadow-lift), 0 0 0 1px var(--ring);
+}
+
+/* Медиа товара: мягкий градиент вместо плоской заливки + зум иконки */
+.product-card-media,
+.detail-media {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(200, 169, 110, 0.12), transparent 60%),
+    var(--bg-elevated);
+  overflow: hidden;
+}
+
+.product-card-media i,
+.detail-media i {
+  transition: transform 0.5s var(--ease-out), color 0.3s ease;
+}
+
+.card-link:hover .product-card-media i,
+.product-card:hover .product-card-media i {
+  transform: scale(1.12) translateY(-2px);
+  color: var(--gold);
+}
+
+.product-card-title {
+  transition: color 0.2s ease;
+}
+.card-link:hover .product-card-title {
+  color: var(--gold);
+}
+
+/* --- Метрики: тонкая верхняя линия-акцент --- */
+.metric-card {
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.metric-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--gold-grad);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+.metric-card:hover::after {
+  opacity: 1;
+}
+
+/* --- Surface-карточки --- */
+.surface-card {
+  box-shadow: var(--shadow-soft);
+}
+
+/* --- Кнопки: градиентное золото, подъём и блик --- */
+.primary-button {
+  position: relative;
+  overflow: hidden;
+  background: var(--gold-grad);
+  border: none;
+  box-shadow: 0 6px 18px -6px var(--glow-gold);
+}
+.primary-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  background-size: 220% 100%;
+  background-position: -120% 0;
+  transition: background-position 0.6s var(--ease-out);
+}
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -8px var(--glow-gold);
+}
+.primary-button:hover::after {
+  background-position: 120% 0;
+}
+.primary-button:active {
+  transform: translateY(0);
+}
+
+.secondary-button:hover,
+.toolbar-button:hover {
+  border-color: var(--gold);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.icon-square:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-1px);
+}
+.icon-square.active {
+  background: rgba(200, 169, 110, 0.12);
+}
+
+/* --- Навигация --- */
+.nav-item {
+  position: relative;
+  border-radius: 0 6px 6px 0;
+}
+.nav-item:hover {
+  transform: translateX(3px);
+}
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(200, 169, 110, 0.16), transparent);
+}
+.nav-item i {
+  transition: transform 0.25s var(--ease-out);
+}
+.nav-item:hover i {
+  transform: scale(1.15);
+  color: var(--gold);
+}
+
+/* --- Топбар: «стеклянный» эффект --- */
+.topbar {
+  background: color-mix(in srgb, var(--bg-surface) 78%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.search-wrap {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.search-wrap:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* --- Поля ввода --- */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* --- Аватар: градиент --- */
+.avatar-button,
+.profile-avatar,
+.small-avatar {
+  background: var(--gold-grad);
+  box-shadow: 0 4px 12px -4px var(--glow-gold);
+}
+.avatar-button:hover {
+  transform: translateY(-1px) scale(1.05);
+}
+
+/* --- Уведомление: пульсирующая точка --- */
+.notif-dot {
+  box-shadow: 0 0 0 0 var(--glow-gold);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* --- Таб-кнопки --- */
+.tab-button:hover {
+  color: var(--text-primary);
+}
+
+/* --- Строки уведомлений / чатов --- */
+.notification-row:hover,
+.chat-summary:hover {
+  transform: translateX(3px);
+  border-color: var(--ring);
+}
+
+/* --- Мини-карточки рекомендаций --- */
+.mini-product-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--ring);
+  box-shadow: var(--shadow-soft);
+}
+
+/* --- Модалки и шторки --- */
+.modal-backdrop {
+  animation: fadeIn 0.2s ease both;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.modal-card {
+  animation: scaleIn 0.28s var(--ease-out) both;
+  box-shadow: var(--shadow-lift);
+}
+
+/* --- Тосты: выезд справа + цветная полоса --- */
+.toast {
+  animation: slideInRight 0.35s var(--ease-out) both;
+  box-shadow: var(--shadow-lift);
+  border-left: 3px solid var(--gold);
+}
+.toast-error {
+  border-left-color: #F87171;
+}
+
+/* --- Drawer: тень --- */
+.drawer.open {
+  box-shadow: var(--shadow-lift);
+}
+
+/* --- Скелетон-загрузка с переливом --- */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-elevated) 25%,
+    var(--bg-hover) 37%,
+    var(--bg-elevated) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmerMove 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+/* --- Детальная цена: акцентный градиентный текст --- */
+.detail-price {
+  background: var(--gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- Чипы вариантов --- */
+.chip:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* --- Прогресс-бар загрузки: золотой градиент + свечение --- */
+.loading-bar::before {
+  background: var(--gold-grad);
+  box-shadow: 0 0 12px var(--glow-gold);
+}
+
+/* --- Кастомный скроллбар --- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-mid) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+  background-clip: padding-box;
+}
+
+/* --- Выделение текста --- */
+::selection {
+  background: rgba(200, 169, 110, 0.3);
+  color: var(--text-primary);
+}
+
+/* --- Уважение к настройке «меньше движения» --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 @media (max-width: 1100px) {
   .metrics-grid,
   .products-grid {

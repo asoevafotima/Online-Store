@@ -35,6 +35,12 @@ def get_current_admin(current_user=Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Admin access required")
     return current_user
 
-def get_current_seller(current_user=Depends(get_current_user)):
-    from store.model import Store
+def get_current_seller(
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    from store.crud import get_store_by_user
+
+    if not get_store_by_user(db, current_user.id):
+        raise HTTPException(status_code=403, detail="У вас нет магазина")
     return current_user
