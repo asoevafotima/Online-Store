@@ -44,10 +44,11 @@ GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 # --- CORS ---
 # Список origin'ов через запятую, например:
 # CORS_ORIGINS=http://localhost:5173,https://example.com
+# По умолчанию "*" — разрешены любые origin'ы (удобно для разработки).
+# API авторизуется через Bearer-токен в заголовке, а не через куки,
+# поэтому "*" безопасен: credentials (куки) при этом не используются.
 CORS_ORIGINS: list[str] = [
     origin.strip()
-    for origin in os.getenv(
-        "CORS_ORIGINS", "http://localhost:5173,http://localhost:3000"
-    ).split(",")
+    for origin in os.getenv("CORS_ORIGINS", "*").split(",")
     if origin.strip()
 ]

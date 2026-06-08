@@ -54,10 +54,14 @@ app = FastAPI(
     lifespan=lifespan 
 )
 
+# Куки не используются (авторизация через Bearer-токен), поэтому при "*"
+# отключаем credentials — иначе браузер отвергает такую комбинацию.
+allow_credentials = CORS_ORIGINS != ["*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
-    allow_credentials=True,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
